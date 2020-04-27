@@ -15,6 +15,7 @@ class SmartyExtension extends Extension {
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 		$loader->load('smarty.yaml');
 
+		$container->setParameter('smarty.template_path', '%kernel.project_dir%/templates/');
 		$container->setParameter('smarty.default_path', '%kernel.project_dir%/templates/%%name%%');
 		$container->setParameter('smarty.plugin_path', '%kernel.project_dir%/smarty');
 	}

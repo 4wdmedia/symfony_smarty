@@ -33,7 +33,7 @@ services:
             $parser: '@smarty.name_parser'
             $loader: '@smarty.filesystem_loader'
             $locator: '@smarty.service_locator'
-            $templateDirectories: [ '%smarty.default_path%' ]
+            $templateDirectories: [ '%smarty.template_path%' ]
             $pluginDirectories: [ '%smarty.plugin_path%' ]
 
     smarty.engine.php:
