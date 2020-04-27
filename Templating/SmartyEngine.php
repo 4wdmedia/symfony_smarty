@@ -3,13 +3,11 @@ declare(strict_types = 1);
 
 namespace Vierwd\Symfony\Smarty\Templating;
 
+use Psr\Container\ContainerInterface;
 use Smarty;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
-use Symfony\WebpackEncoreBundle\Asset\TagRenderer;
-use Vierwd\Symfony\Smarty\Extension\RoutingExtension;
 
 class SmartyEngine implements EngineInterface {
 
@@ -18,15 +16,12 @@ class SmartyEngine implements EngineInterface {
 
 	protected $parser;
 	protected $loader;
-	protected $kernel;
-	protected $tagRenderer;
+	protected $locator;
 
-	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, KernelInterface $kernel, RoutingExtension $routingExtension, TagRenderer $tagRenderer, array $templateDirectories, array $pluginDirectories = []) {
+	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator, array $templateDirectories, array $pluginDirectories = []) {
 		$this->parser = $parser;
 		$this->loader = $loader;
-		$this->kernel = $kernel;
-		$this->tagRenderer = $tagRenderer;
-		$this->routingExtension = $routingExtension;
+		$this->locator = $locator;
 
 		$this->templateDirectories = $templateDirectories;
 
@@ -42,7 +37,7 @@ class SmartyEngine implements EngineInterface {
 
 		$this->smarty = new Smarty();
 
-		if ($this->kernel->getEnvironment() !== 'dev') {
+		if ($this->locator->get('kernel')->getEnvironment() !== 'dev') {
 			$this->smarty->setCacheLifetime(120);
 			$this->smarty->setCompileCheck(false);
 		}
@@ -51,7 +46,7 @@ class SmartyEngine implements EngineInterface {
 		// $this->Smarty->registerFilter('pre', $templateProcessor);
 		// $this->Smarty->registerFilter('variable', 'Vierwd\\VierwdSmarty\\View\\clean');
 
-		$cacheDir = $this->kernel->getCacheDir() . '/smarty';
+		$cacheDir = $this->locator->get('kernel')->getCacheDir() . '/smarty';
 		$this->smarty->compile_dir = $cacheDir . '/templates_c/';
 		$this->smarty->cache_dir   = $cacheDir . '/cache/';
 
@@ -68,9 +63,9 @@ class SmartyEngine implements EngineInterface {
 
 		$this->smarty->setTemplateDir($this->templateDirectories);
 
-		$this->smarty->assign('tagRenderer', $this->tagRenderer);
+		$this->smarty->assign('tagRenderer', $this->locator->get('tagRenderer'));
 
-		$this->routingExtension->register($this->smarty);
+		$this->locator->get('routing')->register($this->smarty);
 	}
 
 	public function render($name, array $parameters = []) {
@@ -88,14 +83,5 @@ class SmartyEngine implements EngineInterface {
 
 	public function supports($name) {
 		debug4wd($name);
-	}
-
-	public function smarty_path($params, $smarty) {
-		$params = $params + [
-			'path' => null,
-		];
-		extract($params);
-
-		return $uri;
 	}
 }

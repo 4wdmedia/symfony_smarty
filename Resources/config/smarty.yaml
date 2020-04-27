@@ -7,6 +7,19 @@ services:
         class: Symfony\Component\Templating\Loader\FilesystemLoader
         arguments: ['%smarty.default_path%']
 
+    smarty.extension.routing:
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Extension\RoutingExtension
+
+    smarty.service_locator:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        autoconfigure: true
+        arguments:
+            -
+                kernel: '@kernel'
+                tagRenderer: '@webpack_encore.tag_renderer'
+                routing: '@smarty.extension.routing'
+
     smarty:
         public: true
         autowire: true
@@ -14,13 +27,9 @@ services:
         arguments:
             $parser: '@smarty.name_parser'
             $loader: '@smarty.filesystem_loader'
-            $tagRenderer: '@webpack_encore.tag_renderer'
+            $locator: '@smarty.service_locator'
             $templateDirectories: [ '%smarty.default_path%' ]
             $pluginDirectories: [ '%smarty.plugin_path%' ]
 
     Vierwd\Symfony\Smarty\Templating\SmartyEngine:
       alias: smarty
-
-    Vierwd\Symfony\Smarty\Extension\RoutingExtension:
-        autowire: true
-        class: Vierwd\Symfony\Smarty\Extension\RoutingExtension
