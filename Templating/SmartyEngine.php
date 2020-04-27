@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\WebpackEncoreBundle\Asset\TagRenderer;
 
 class SmartyEngine implements EngineInterface {
 
@@ -17,11 +18,13 @@ class SmartyEngine implements EngineInterface {
 	protected $parser;
 	protected $loader;
 	protected $kernel;
+	protected $tagRenderer;
 
-	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, KernelInterface $kernel, array $templateDirectories, array $pluginDirectories = []) {
+	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, KernelInterface $kernel, TagRenderer $tagRenderer, array $templateDirectories, array $pluginDirectories = []) {
 		$this->parser = $parser;
 		$this->loader = $loader;
 		$this->kernel = $kernel;
+		$this->tagRenderer = $tagRenderer;
 
 		$this->templateDirectories = $templateDirectories;
 
@@ -62,6 +65,8 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->loadFilter('variable', 'clean');
 
 		$this->smarty->setTemplateDir($this->templateDirectories);
+
+		$this->smarty->assign('tagRenderer', $this->tagRenderer);
 	}
 
 	public function render($name, array $parameters = []) {

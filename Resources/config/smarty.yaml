@@ -14,6 +14,7 @@ services:
         arguments:
             $parser: '@smarty.name_parser'
             $loader: '@smarty.filesystem_loader'
+            $tagRenderer: '@webpack_encore.tag_renderer'
             $templateDirectories: [ '%smarty.default_path%' ]
             $pluginDirectories: [ '%smarty.plugin_path%' ]
 
