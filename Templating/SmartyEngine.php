@@ -65,7 +65,8 @@ class SmartyEngine implements EngineInterface {
 
 		$this->smarty->assign('tagRenderer', $this->locator->get('tagRenderer'));
 
-		$this->locator->get('routing')->register($this->smarty);
+		$this->locator->get('extension.routing')->register($this->smarty);
+		$this->locator->get('extension.twig')->register($this->smarty);
 	}
 
 	public function render($name, array $parameters = []) {

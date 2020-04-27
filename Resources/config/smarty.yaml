@@ -11,6 +11,10 @@ services:
         autowire: true
         class: Vierwd\Symfony\Smarty\Extension\RoutingExtension
 
+    smarty.extension.twig:
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Extension\TwigInSmartyExtension
+
     smarty.service_locator:
         class: Symfony\Component\DependencyInjection\ServiceLocator
         autoconfigure: true
@@ -18,7 +22,8 @@ services:
             -
                 kernel: '@kernel'
                 tagRenderer: '@webpack_encore.tag_renderer'
-                routing: '@smarty.extension.routing'
+                extension.routing: '@smarty.extension.routing'
+                extension.twig: '@smarty.extension.twig'
 
     smarty.engine.smarty:
         public: true
