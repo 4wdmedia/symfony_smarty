@@ -1,0 +1,21 @@
+services:
+    smarty.name_parser:
+        class: Symfony\Component\Templating\TemplateNameParser
+        arguments: ['@kernel']
+
+    smarty.filesystem_loader:
+        class: Symfony\Component\Templating\Loader\FilesystemLoader
+        arguments: ['%smarty.default_path%']
+
+    smarty:
+        public: true
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Templating\SmartyEngine
+        arguments:
+            $parser: '@smarty.name_parser'
+            $loader: '@smarty.filesystem_loader'
+            $templateDirectories: [ '%smarty.default_path%' ]
+            $pluginDirectories: [ '%smarty.plugin_path%' ]
+
+    Vierwd\Symfony\Smarty\Templating\SmartyEngine:
+      alias: smarty
