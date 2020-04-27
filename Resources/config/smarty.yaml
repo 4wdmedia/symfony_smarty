@@ -20,7 +20,7 @@ services:
                 tagRenderer: '@webpack_encore.tag_renderer'
                 routing: '@smarty.extension.routing'
 
-    smarty:
+    smarty.engine.smarty:
         public: true
         autowire: true
         class: Vierwd\Symfony\Smarty\Templating\SmartyEngine
@@ -31,5 +31,30 @@ services:
             $templateDirectories: [ '%smarty.default_path%' ]
             $pluginDirectories: [ '%smarty.plugin_path%' ]
 
+    smarty.engine.php:
+        class: Symfony\Component\Templating\PhpEngine
+        arguments:
+            $parser: '@smarty.name_parser'
+            $loader: '@smarty.filesystem_loader'
+
+    smarty.engine.twig:
+        class: Vierwd\Symfony\Smarty\Templating\TwigEngine
+        autowire: true
+        arguments:
+            $parser: '@smarty.name_parser'
+            $loader: '@smarty.filesystem_loader'
+
+    templating:
+        public: true
+        class: Symfony\Component\Templating\DelegatingEngine
+        arguments:
+            -
+                - '@smarty.engine.smarty'
+                - '@smarty.engine.twig'
+                - '@smarty.engine.php'
+
     Vierwd\Symfony\Smarty\Templating\SmartyEngine:
-      alias: smarty
+      alias: smarty.engine.smarty
+
+    Symfony\Component\Templating\DelegatingEngine:
+        alias: templating

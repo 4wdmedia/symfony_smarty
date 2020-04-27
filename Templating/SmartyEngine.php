@@ -78,10 +78,12 @@ class SmartyEngine implements EngineInterface {
 	}
 
 	public function exists($name) {
-		debug4wd('exists', $name);
+		$this->initializeSmarty();
+
+		return $this->smarty->templateExists($name);
 	}
 
 	public function supports($name) {
-		debug4wd($name);
+		return substr($name, -4) === '.tpl';
 	}
 }
