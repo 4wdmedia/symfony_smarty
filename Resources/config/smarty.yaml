@@ -20,3 +20,7 @@ services:
 
     Vierwd\Symfony\Smarty\Templating\SmartyEngine:
       alias: smarty
+
+    Vierwd\Symfony\Smarty\Extension\RoutingExtension:
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Extension\RoutingExtension

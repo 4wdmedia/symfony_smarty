@@ -9,6 +9,7 @@ use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\WebpackEncoreBundle\Asset\TagRenderer;
+use Vierwd\Symfony\Smarty\Extension\RoutingExtension;
 
 class SmartyEngine implements EngineInterface {
 
@@ -20,11 +21,12 @@ class SmartyEngine implements EngineInterface {
 	protected $kernel;
 	protected $tagRenderer;
 
-	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, KernelInterface $kernel, TagRenderer $tagRenderer, array $templateDirectories, array $pluginDirectories = []) {
+	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, KernelInterface $kernel, RoutingExtension $routingExtension, TagRenderer $tagRenderer, array $templateDirectories, array $pluginDirectories = []) {
 		$this->parser = $parser;
 		$this->loader = $loader;
 		$this->kernel = $kernel;
 		$this->tagRenderer = $tagRenderer;
+		$this->routingExtension = $routingExtension;
 
 		$this->templateDirectories = $templateDirectories;
 
@@ -67,6 +69,8 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->setTemplateDir($this->templateDirectories);
 
 		$this->smarty->assign('tagRenderer', $this->tagRenderer);
+
+		$this->routingExtension->register($this->smarty);
 	}
 
 	public function render($name, array $parameters = []) {
@@ -84,5 +88,14 @@ class SmartyEngine implements EngineInterface {
 
 	public function supports($name) {
 		debug4wd($name);
+	}
+
+	public function smarty_path($params, $smarty) {
+		$params = $params + [
+			'path' => null,
+		];
+		extract($params);
+
+		return $uri;
 	}
 }
