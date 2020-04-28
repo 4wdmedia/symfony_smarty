@@ -2,7 +2,7 @@
     "name": "vierwd/symfony-smarty",
     "type": "symfony-bundle",
     "description": "Symfony Smarty Component",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "keywords": [],
     "homepage": "https://www.4wdmedia.de",
     "license": "MIT",
@@ -15,7 +15,8 @@
     "require": {
         "php": "^7.2.0",
         "smarty/smarty": "^3.1",
-        "symfony/templating": "5.0.*"
+        "symfony/templating": "5.0.*",
+        "vierwd/svg-inliner": "^1.2"
     },
     "autoload": {
         "psr-4": {
