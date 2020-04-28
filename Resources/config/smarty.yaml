@@ -24,6 +24,7 @@ services:
                 tagRenderer: '@webpack_encore.tag_renderer'
                 extension.routing: '@smarty.extension.routing'
                 extension.twig: '@smarty.extension.twig'
+                twig.app_variable: '@twig.app_variable'
 
     smarty.engine.smarty:
         public: true

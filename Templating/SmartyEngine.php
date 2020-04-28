@@ -63,6 +63,7 @@ class SmartyEngine implements EngineInterface {
 
 		$this->smarty->setTemplateDir($this->templateDirectories);
 
+		$this->smarty->assign('app', $this->locator->get('twig.app_variable'));
 		$this->smarty->assign('tagRenderer', $this->locator->get('tagRenderer'));
 
 		$this->locator->get('extension.routing')->register($this->smarty);
