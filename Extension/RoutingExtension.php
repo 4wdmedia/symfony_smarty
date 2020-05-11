@@ -29,6 +29,9 @@ class RoutingExtension {
 		];
 		$name = $params['name'];
 		$parameters = $params['parameters'];
+		$parameters = array_map(function($parameter) {
+			return is_object($parameter) && method_exists($parameter, 'getId') ? $parameter->getId() : $parameter;
+		}, $parameters);
 		$relative = $params['relative'];
 		return $this->generator->generate($name, $parameters, $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH);
 	}
@@ -42,6 +45,9 @@ class RoutingExtension {
 		];
 		$name = $params['name'];
 		$parameters = $params['parameters'];
+		$parameters = array_map(function($parameter) {
+			return is_object($parameter) && method_exists($parameter, 'getId') ? $parameter->getId() : $parameter;
+		}, $parameters);
 		$schemeRelative = $params['schemeRelative'];
 		return $this->generator->generate($name, $parameters, $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL);
 	}
