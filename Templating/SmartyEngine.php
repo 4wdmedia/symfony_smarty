@@ -62,7 +62,7 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->addPluginsDir($this->pluginDirectories);
 		$this->smarty->loadFilter('pre', 'strip');
 		$this->smarty->loadFilter('variable', 'clean');
-		$this->smarty->loadFilter('output', 'inlinecss');
+		$this->smarty->loadFilter('output', 'inlineCSS');
 
 		$this->smarty->setTemplateDir($this->templateDirectories);
 
