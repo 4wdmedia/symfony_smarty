@@ -8,6 +8,7 @@ use Smarty;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollectionInterface;
 
 class SmartyEngine implements EngineInterface {
 
@@ -18,7 +19,8 @@ class SmartyEngine implements EngineInterface {
 	protected $loader;
 	protected $locator;
 
-	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator, array $templateDirectories, array $pluginDirectories = []) {
+	public function __construct(EntrypointLookupCollectionInterface $entrypointCollection, TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator, array $templateDirectories, array $pluginDirectories = []) {
+		$this->entrypointCollection = $entrypointCollection;
 		$this->parser = $parser;
 		$this->loader = $loader;
 		$this->locator = $locator;
@@ -60,6 +62,7 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->addPluginsDir($this->pluginDirectories);
 		$this->smarty->loadFilter('pre', 'strip');
 		$this->smarty->loadFilter('variable', 'clean');
+		$this->smarty->loadFilter('output', 'inlinecss');
 
 		$this->smarty->setTemplateDir($this->templateDirectories);
 
@@ -73,6 +76,8 @@ class SmartyEngine implements EngineInterface {
 
 	public function render($name, array $parameters = []) {
 		$this->initializeSmarty();
+
+		$this->entrypointCollection->getEntrypointLookup('_default')->reset();
 
 		$this->smarty->assign($parameters);
 		// $templateReference = $this->parser->parse($name);
