@@ -36,30 +36,60 @@ class ImageService {
 			return null;
 		}
 
-		$extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+		$prefix = $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
 		if (!in_array($extension, $this->allowedExtensions)) {
 			throw new \Exception('Invalid image extension: ' . $extension, 1590408262);
 		}
 
-		$filename = pathinfo($imagePath, PATHINFO_FILENAME);
-		$outputFile = '_processed_/' . $filename . '_' . md5(serialize($params)) . $extension;
+		$fileName = pathinfo($imagePath, PATHINFO_FILENAME);
 
-		$parameters = [
-			'-resize', '150x150^',
+		$parameters = array_merge([
 			'-quality', 85,
 			'-interlace', 'Plane',
-		];
+		], $params);
+
+		if (isset($parameters['fileExtension'])) {
+			$extension = $parameters['fileExtension'];
+			if ($extension === 'jpg' && !in_array('-background', $parameters)) {
+				$parameters[] = '-background';
+				$parameters[] = 'white';
+				$parameters[] = '-flatten';
+			}
+			unset($parameters['fileExtension']);
+		}
+
+		if (isset($parameters['fileName'])) {
+			$fileName = pathinfo($parameters['fileName'], PATHINFO_FILENAME);
+			unset($parameters['fileName']);
+		}
+		// $fileName = $this->transliterator->transliterate($fileName);
+
+		$hash = md5($imagePath . serialize($parameters));
+		$subdir = $hash[0] . '/' . $hash[1];
+
+		$outputDirectory = '_processed_/' . $subdir . '/';
+		$outputFile = $outputDirectory . $fileName . '_' . $hash . '.' . $extension;
+		if (file_exists($outputFile)) {
+			return '/' . $outputFile;
+		}
+
+		if (!is_dir($outputDirectory)) {
+			mkdir($outputDirectory, 0755, true);
+		}
 
 		$process = new Process(array_merge([
 			'convert',
-			$extension . ':' . $imagePath,
+			$prefix . ':' . $imagePath,
 		], $parameters, [$outputFile]));
 		$process->run();
 
 		if ($process->isSuccessful()) {
-			return $outputFile;
+			return '/' . $outputFile;
 		}
 
-		return null;
+		if (!empty($_SERVER['VIERWD_CONFIG'])) {
+			debug4wd($process);
+		}
+		throw new \Exception('Could not process file', 1590410057);
 	}
 }
