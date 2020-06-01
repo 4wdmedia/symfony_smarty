@@ -73,6 +73,7 @@ class SmartyEngine implements EngineInterface {
 		$this->locator->get('extension.routing')->register($this->smarty);
 		$this->locator->get('extension.twig')->register($this->smarty);
 		$this->locator->get('extension.csrf')->register($this->smarty);
+		$this->locator->get('extension.modifier')->register($this->smarty);
 	}
 
 	public function render($name, array $parameters = []) {

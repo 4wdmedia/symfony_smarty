@@ -20,6 +20,10 @@ services:
         class: Vierwd\Symfony\Smarty\Extension\CsrfExtension
 
 
+    smarty.extension.modifier:
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Extension\ModifierExtension
+
     smarty.image_service:
         autowire: true
         class: Vierwd\Symfony\Smarty\Service\ImageService
@@ -35,6 +39,7 @@ services:
                 extension.routing: '@smarty.extension.routing'
                 extension.twig: '@smarty.extension.twig'
                 extension.csrf: '@smarty.extension.csrf'
+                extension.modifier: '@smarty.extension.modifier'
                 twig.app_variable: '@twig.app_variable'
 
     smarty.engine.smarty:
