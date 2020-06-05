@@ -31,6 +31,15 @@ class ImageService {
 		$this->command = $command;
 	}
 
+	public function isImage(string $imagePath): bool {
+		if (!file_exists($imagePath)) {
+			return false;
+		}
+
+		$prefix = $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+		return in_array($extension, $this->allowedExtensions);
+	}
+
 	public function convert(string $imagePath, array $params): ?string {
 		if (!file_exists($imagePath)) {
 			return null;
