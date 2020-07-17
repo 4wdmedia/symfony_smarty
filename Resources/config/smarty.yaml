@@ -24,6 +24,10 @@ services:
         autowire: true
         class: Vierwd\Symfony\Smarty\Extension\ModifierExtension
 
+    smarty.extension.widget:
+        autowire: true
+        class: Vierwd\Symfony\Smarty\Extension\WidgetExtension
+
     smarty.image_service:
         autowire: true
         class: Vierwd\Symfony\Smarty\Service\ImageService
@@ -40,6 +44,7 @@ services:
                 extension.twig: '@smarty.extension.twig'
                 extension.csrf: '@smarty.extension.csrf'
                 extension.modifier: '@smarty.extension.modifier'
+                extension.widget: '@smarty.extension.widget'
                 twig.app_variable: '@twig.app_variable'
 
     smarty.engine.smarty:
