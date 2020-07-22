@@ -16,7 +16,7 @@ class WidgetExtension {
 	}
 
 	public function getWidget(array $params, Smarty_Internal_Template $smarty): string {
-		return 'widget';
+		return '';
 	}
 
 }
