@@ -36,7 +36,7 @@ class ImageService {
 			return false;
 		}
 
-		$prefix = $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+		$extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
 		return in_array($extension, $this->allowedExtensions);
 	}
 
@@ -87,7 +87,7 @@ class ImageService {
 		}
 
 		$process = new Process(array_merge([
-			'convert',
+			$this->command,
 			$prefix . ':' . $imagePath,
 		], $parameters, [$outputFile]));
 		$process->run();
