@@ -2,28 +2,29 @@
 
 namespace Vierwd\Symfony\Smarty\Extension;
 
-use Psr\Container\ContainerInterface;
 use Smarty;
 use Smarty_Internal_Template;
+use Twig\Environment as TwigEnvironment;
 
 class TwigInSmartyExtension {
 
+	/** @var \Twig\Environment */
+	protected $twig = null;
 
-	public function __construct(ContainerInterface $locator) {
-		$this->locator = $locator;
+	public function __construct(TwigEnvironment $twig) {
+		$this->twig = $twig;
 	}
 
 	public function register(Smarty $smarty): void {
 		$smarty->registerPlugin('block', 'twig', [$this, 'smarty_twig']);
 	}
 
-	public function smarty_twig($params, $content, Smarty_Internal_Template $smarty, &$repeat) {
+	public function smarty_twig(array $params, ?string $content, Smarty_Internal_Template $smarty, bool &$repeat): string {
 		if (!isset($content)) {
-			return;
+			return '';
 		}
 
-		$twig = $this->locator->get('twig');
-		$template = $twig->createTemplate($content);
-		return $twig->render($template, $smarty->getTemplateVars());
+		$template = $this->twig->createTemplate($content);
+		return $this->twig->render($template, $smarty->getTemplateVars());
 	}
 }

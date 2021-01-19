@@ -10,8 +10,11 @@ use Symfony\Component\Templating\TemplateNameParserInterface;
 
 class TwigEngine implements EngineInterface {
 
+	/** @var TemplateNameParserInterface */
 	protected $parser;
+	/** @var LoaderInterface */
 	protected $loader;
+	/** @var ContainerInterface */
 	protected $locator;
 
 	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator) {
@@ -35,6 +38,6 @@ class TwigEngine implements EngineInterface {
 	}
 
 	public function supports($name) {
-		return substr($name, -5) === '.twig';
+		return substr((string)$name, -5) === '.twig';
 	}
 }

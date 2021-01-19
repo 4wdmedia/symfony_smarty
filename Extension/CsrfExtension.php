@@ -9,6 +9,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class CsrfExtension {
 
+	/** @var CsrfTokenManagerInterface */
 	protected $csrfTokenManager;
 
 	public function __construct(CsrfTokenManagerInterface $csrfTokenManager) {

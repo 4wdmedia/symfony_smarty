@@ -7,8 +7,10 @@ use Symfony\Component\Process\Process;
 
 class ImageService {
 
+	/** @var string */
 	private $command;
 
+	/** @var array<string> */
 	protected $allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'tif', 'tiff', 'bmp', 'pcx', 'tga', 'ico'];
 
 	public function __construct(string $command = null) {
@@ -24,8 +26,8 @@ class ImageService {
 			}
 		}
 
-		if (!is_executable($command)) {
-			throw new Exception('Could not find ImageMagick executable', 1590406170);
+		if (!$command || !is_executable($command)) {
+			throw new \Exception('Could not find ImageMagick executable', 1590406170);
 		}
 
 		$this->command = $command;

@@ -13,11 +13,20 @@ use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollectionInterface;
 class SmartyEngine implements EngineInterface {
 
 	/** @var Smarty */
-	protected $smarty;
+	protected $smarty = null;
 
+	/** @var EntrypointLookupCollectionInterface */
+	protected $entrypointCollection;
+	/** @var TemplateNameParserInterface */
 	protected $parser;
+	/** @var LoaderInterface */
 	protected $loader;
+	/** @var ContainerInterface */
 	protected $locator;
+	/** @var array */
+	protected $templateDirectories;
+	/** @var array */
+	protected $pluginDirectories;
 
 	public function __construct(EntrypointLookupCollectionInterface $entrypointCollection, TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator, array $templateDirectories, array $pluginDirectories = []) {
 		$this->entrypointCollection = $entrypointCollection;
@@ -32,8 +41,8 @@ class SmartyEngine implements EngineInterface {
 		$this->pluginDirectories = $pluginDirectories;
 	}
 
-	protected function initializeSmarty() {
-		if ($this->smarty) {
+	protected function initializeSmarty(): void {
+		if ($this->smarty !== null) {
 			return;
 		}
 
@@ -41,7 +50,7 @@ class SmartyEngine implements EngineInterface {
 
 		if ($this->locator->get('kernel')->getEnvironment() !== 'dev') {
 			$this->smarty->setCacheLifetime(120);
-			$this->smarty->setCompileCheck(false);
+			$this->smarty->setCompileCheck(0);
 		}
 
 		// $templateProcessor = new TemplatePreprocessor();
@@ -49,14 +58,14 @@ class SmartyEngine implements EngineInterface {
 		// $this->Smarty->registerFilter('variable', 'Vierwd\\VierwdSmarty\\View\\clean');
 
 		$cacheDir = $this->locator->get('kernel')->getCacheDir() . '/smarty';
-		$this->smarty->compile_dir = $cacheDir . '/templates_c/';
-		$this->smarty->cache_dir   = $cacheDir . '/cache/';
+		$this->smarty->setCompileDir($cacheDir . '/templates_c/');
+		$this->smarty->setCacheDir($cacheDir . '/cache/');
 
-		if (!is_dir($this->smarty->cache_dir)) {
-			mkdir($this->smarty->cache_dir, 0755, true);
+		if (!is_dir($this->smarty->getCacheDir())) {
+			mkdir($this->smarty->getCacheDir(), 0755, true);
 		}
-		if (!is_dir($this->smarty->compile_dir)) {
-			mkdir($this->smarty->compile_dir, 0755, true);
+		if (!is_dir($this->smarty->getCompileDir())) {
+			mkdir($this->smarty->getCompileDir(), 0755, true);
 		}
 
 		$this->smarty->addPluginsDir($this->pluginDirectories);
@@ -85,16 +94,16 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->assign($parameters);
 		// $templateReference = $this->parser->parse($name);
 		// $this->loader->load($templateReference);
-		return $this->smarty->fetch($name);
+		return $this->smarty->fetch((string)$name);
 	}
 
 	public function exists($name) {
 		$this->initializeSmarty();
 
-		return $this->smarty->templateExists($name);
+		return $this->smarty->templateExists((string)$name);
 	}
 
 	public function supports($name) {
-		return substr($name, -4) === '.tpl';
+		return substr((string)$name, -4) === '.tpl';
 	}
 }

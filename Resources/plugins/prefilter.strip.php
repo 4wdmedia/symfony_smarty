@@ -10,7 +10,7 @@ function smarty_prefilter_strip(string $template): string {
 	// Whitespace after comments is not stripped.
 	// @see https://github.com/smarty-php/smarty/issues/436
 	// We do not want this behaviour. That's why we strip all comments
-	$template = preg_replace('-\{\*.*?\*\}-s', '', $template);
+	$template = (string)preg_replace('-\{\*.*?\*\}-s', '', $template);
 
 	$search = array_keys($replacements);
 	$replace = array_values($replacements);

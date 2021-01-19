@@ -17,7 +17,7 @@ class CssInlineStyles {
 		$html = $metaCharset . $content;
 
 		// Remove Cache-Buster from Images. SwiftMailer cannot embed images, which do not end with a normal image-file-extension
-		$html = preg_replace('/\.(webp|jpe?g|png|gif)\?_=\d+/', '.$1', $html);
+		$html = (string)preg_replace('/\.(webp|jpe?g|png|gif)\?_=\d+/', '.$1', $html);
 
 		$css = self::extractCSS($html);
 
@@ -32,19 +32,20 @@ class CssInlineStyles {
 		$head = $document->getElementsByTagName('head')->item(0);
 
 		// remove all external stylesheets
-		$links = iterator_to_array($XPath->query('//link[@rel="stylesheet"]'));
+		$links = $XPath->query('//link[@rel="stylesheet"]');
+		$links = $links ? iterator_to_array($links) : [];
 		foreach ($links as $link) {
 			$link->parentNode->removeChild($link);
 		}
 
 		// use data-attribute, because Outlook had problems with multiple classes
-		$intros = $XPath->query('//*[contains(@class, "intro")]');
+		$intros = $XPath->query('//*[contains(@class, "intro")]') ?: [];
 		foreach ($intros as $intro) {
 			$intro->setAttribute('data-intro', 'intro');
 		}
 
 		// remove class attributes
-		$elements = $XPath->query('//*[@class]');
+		$elements = $XPath->query('//*[@class]') ?: [];
 		foreach ($elements as $element) {
 			$classes = explode(' ', $element->getAttribute('class'));
 			$classes = array_filter($classes, function(string $class) {
@@ -58,7 +59,7 @@ class CssInlineStyles {
 		}
 
 		// Add fallback-font for Outlook to all paragraphs
-		$paragraphs = $XPath->query('//p');
+		$paragraphs = $XPath->query('//p') ?: [];
 		foreach ($paragraphs as $paragraph) {
 			$class = $paragraph->getAttribute('class') ?? '';
 			$class .= ' fallback-font';
@@ -66,10 +67,12 @@ class CssInlineStyles {
 		}
 
 		// our links will have inlined-styles. Some mail clients (iOS) detects phone numbers and events and links them
-		$style = $document->createElement('style');
-		$style->setAttribute('type', 'text/css');
-		$style->appendChild($document->createTextNode('a {color: inherit; text-decoration: none;}'));
-		$head->insertBefore($style, $head->lastChild);
+		if ($head && $head->lastChild) {
+			$style = $document->createElement('style');
+			$style->setAttribute('type', 'text/css');
+			$style->appendChild($document->createTextNode('a {color: inherit; text-decoration: none;}'));
+			$head->insertBefore($style, $head->lastChild);
+		}
 
 		// inline webfonts
 		// if (preg_match_all('/@font-face\s*\{[^}]*\}/', $css, $matches)) {
@@ -94,7 +97,7 @@ class CssInlineStyles {
 		// }
 
 		// inline media queries
-		if (preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
+		if ($head && $head->lastChild && preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
 			$rules = implode("\n", $matches[0]);
 
 			$style = $document->createElement('style');
@@ -104,7 +107,7 @@ class CssInlineStyles {
 		}
 
 		$htmlElement = $document->getElementsByTagName('html')->item(0);
-		return $document->saveHtml($htmlElement);
+		return $document->saveHtml($htmlElement) ?: '';
 	}
 
 	protected static function extractCSS(string $html): string {
@@ -115,7 +118,8 @@ class CssInlineStyles {
 		$XPath = new DOMXPath($document);
 
 		$css = '';
-		$links = iterator_to_array($XPath->query('//link[@rel="stylesheet"][@href]'));
+		$links = $XPath->query('//link[@rel="stylesheet"][@href]');
+		$links = $links ? iterator_to_array($links) : [];
 		foreach ($links as $link) {
 			$url = $link->getAttribute('href');
 			if (self::isAbsoluteUrl($url)) {

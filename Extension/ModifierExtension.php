@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Vierwd\Symfony\Smarty\Extension;
 
 use Smarty;
-use Smarty_Internal_Template;
 
 class ModifierExtension {
 
@@ -15,6 +14,9 @@ class ModifierExtension {
 		$smarty->registerPlugin('modifier', 'integer', [$this, 'smarty_integer']);
 	}
 
+	/**
+	 * @param mixed $value
+	 */
 	public function smarty_integer($value): string {
 		return number_format((int)$value, 0, ',', '.');
 	}
