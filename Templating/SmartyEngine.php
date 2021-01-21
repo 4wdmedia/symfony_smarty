@@ -5,6 +5,7 @@ namespace Vierwd\Symfony\Smarty\Templating;
 
 use Psr\Container\ContainerInterface;
 use Smarty;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
@@ -19,6 +20,8 @@ class SmartyEngine implements EngineInterface {
 	protected $entrypointCollection;
 	/** @var TemplateNameParserInterface */
 	protected $parser;
+	/** @var AuthorizationCheckerInterface */
+	protected $authChecker;
 	/** @var LoaderInterface */
 	protected $loader;
 	/** @var ContainerInterface */
@@ -28,9 +31,18 @@ class SmartyEngine implements EngineInterface {
 	/** @var array */
 	protected $pluginDirectories;
 
-	public function __construct(EntrypointLookupCollectionInterface $entrypointCollection, TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator, array $templateDirectories, array $pluginDirectories = []) {
+	public function __construct(
+		EntrypointLookupCollectionInterface $entrypointCollection,
+		TemplateNameParserInterface $parser,
+		AuthorizationCheckerInterface $authChecker,
+		LoaderInterface $loader,
+		ContainerInterface $locator,
+		array $templateDirectories,
+		array $pluginDirectories = []
+	) {
 		$this->entrypointCollection = $entrypointCollection;
 		$this->parser = $parser;
+		$this->authChecker = $authChecker;
 		$this->loader = $loader;
 		$this->locator = $locator;
 
@@ -78,6 +90,7 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->assign('app', $this->locator->get('twig.app_variable'));
 		$this->smarty->assign('tagRenderer', $this->locator->get('tagRenderer'));
 		$this->smarty->assign('imageService', $this->locator->get('imageService'));
+		$this->smarty->assign('authChecker', $this->authChecker);
 
 		$this->locator->get('extension.routing')->register($this->smarty);
 		$this->locator->get('extension.twig')->register($this->smarty);
