@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace Vierwd\Symfony\Smarty\Templating;
 
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Twig\Environment as TwigEnvironment;
 
 class TwigEngine implements EngineInterface {
 
@@ -14,22 +14,22 @@ class TwigEngine implements EngineInterface {
 	protected $parser;
 	/** @var LoaderInterface */
 	protected $loader;
-	/** @var ContainerInterface */
-	protected $locator;
+	/** @var TwigEnvironment */
+	protected $twig;
 
-	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, ContainerInterface $locator) {
+	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, TwigEnvironment $twig) {
 		$this->parser = $parser;
 		$this->loader = $loader;
-		$this->locator = $locator;
+		$this->twig = $twig;
 	}
 
 	public function render($name, array $parameters = []) {
-		return $this->locator->get('twig')->render($name, $parameters);
+		return $this->twig->render((string)$name, $parameters);
 	}
 
 	public function exists($name) {
 		try {
-			$this->locator->get('twig')->load($name);
+			$this->twig->load((string)$name);
 		} catch (\Throwable $e) {
 			return false;
 		}
