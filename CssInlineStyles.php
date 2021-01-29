@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace Vierwd\Symfony\Smarty;
 
 use DOMDocument;
+use DOMElement;
+use DOMNode;
 use DOMXPath;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
@@ -32,20 +34,21 @@ class CssInlineStyles {
 		$head = $document->getElementsByTagName('head')->item(0);
 
 		// remove all external stylesheets
-		$links = $XPath->query('//link[@rel="stylesheet"]');
-		$links = $links ? iterator_to_array($links) : [];
+		$links = self::queryElements($XPath, '//link[@rel="stylesheet"]');
 		foreach ($links as $link) {
-			$link->parentNode->removeChild($link);
+			if ($link->parentNode) {
+				$link->parentNode->removeChild($link);
+			}
 		}
 
 		// use data-attribute, because Outlook had problems with multiple classes
-		$intros = $XPath->query('//*[contains(@class, "intro")]') ?: [];
+		$intros = self::queryElements($XPath, '//*[contains(@class, "intro")]');
 		foreach ($intros as $intro) {
 			$intro->setAttribute('data-intro', 'intro');
 		}
 
 		// remove class attributes
-		$elements = $XPath->query('//*[@class]') ?: [];
+		$elements = self::queryElements($XPath, '//*[@class]');
 		foreach ($elements as $element) {
 			$classes = explode(' ', $element->getAttribute('class'));
 			$classes = array_filter($classes, function(string $class) {
@@ -59,7 +62,7 @@ class CssInlineStyles {
 		}
 
 		// Add fallback-font for Outlook to all paragraphs
-		$paragraphs = $XPath->query('//p') ?: [];
+		$paragraphs = self::queryElements($XPath, '//p');
 		foreach ($paragraphs as $paragraph) {
 			$class = $paragraph->getAttribute('class') ?? '';
 			$class .= ' fallback-font';
@@ -118,8 +121,7 @@ class CssInlineStyles {
 		$XPath = new DOMXPath($document);
 
 		$css = '';
-		$links = $XPath->query('//link[@rel="stylesheet"][@href]');
-		$links = $links ? iterator_to_array($links) : [];
+		$links = self::queryElements($XPath, '//link[@rel="stylesheet"][@href]');
 		foreach ($links as $link) {
 			$url = $link->getAttribute('href');
 			if (self::isAbsoluteUrl($url)) {
@@ -130,6 +132,18 @@ class CssInlineStyles {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * @return DOMElement[]
+	 */
+	protected static function queryElements(DOMXPath $XPath, string $query): array {
+		$elements = $XPath->query($query);
+		$elements = $elements ? iterator_to_array($elements) : [];
+		$elements = array_filter($elements, function(DOMNode $node): bool {
+			return $node instanceof DOMElement;
+		});
+		return $elements;
 	}
 
 	protected static function isAbsoluteUrl(string $url): bool {
