@@ -27,6 +27,12 @@ function smarty_function_svg(array $params, Smarty_Internal_Template $smarty): s
 	}
 
 	if ($params['src']) {
+		$svgClass = 'svg-' . basename($params['src'], '.svg');
+		if ($params['class']) {
+			$params['class'] .= ' ' . $svgClass;
+		} else {
+			$params['class'] = $svgClass;
+		}
 		return $svgInliner->renderSVGFile($params['src'], $params);
 	}
 
