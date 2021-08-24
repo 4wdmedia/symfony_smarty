@@ -98,9 +98,6 @@ class ImageService {
 			return '/' . $outputFile;
 		}
 
-		if (!empty($_SERVER['VIERWD_CONFIG'])) {
-			debug4wd($process);
-		}
 		throw new \Exception('Could not process file', 1590410057);
 	}
 }

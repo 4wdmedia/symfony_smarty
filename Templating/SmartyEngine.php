@@ -5,11 +5,13 @@ namespace Vierwd\Symfony\Smarty\Templating;
 
 use Psr\Container\ContainerInterface;
 use Smarty;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollectionInterface;
+use Vierwd\Symfony\Smarty\Event\SmartyInitializeEvent;
 
 class SmartyEngine implements EngineInterface {
 
@@ -20,6 +22,8 @@ class SmartyEngine implements EngineInterface {
 	protected $entrypointCollection;
 	/** @var TemplateNameParserInterface */
 	protected $parser;
+	/** @var EventDispatcherInterface */
+	protected $dispatcher;
 	/** @var AuthorizationCheckerInterface */
 	protected $authChecker;
 	/** @var LoaderInterface */
@@ -34,6 +38,7 @@ class SmartyEngine implements EngineInterface {
 	public function __construct(
 		EntrypointLookupCollectionInterface $entrypointCollection,
 		TemplateNameParserInterface $parser,
+		EventDispatcherInterface $dispatcher,
 		AuthorizationCheckerInterface $authChecker,
 		LoaderInterface $loader,
 		ContainerInterface $locator,
@@ -42,6 +47,7 @@ class SmartyEngine implements EngineInterface {
 	) {
 		$this->entrypointCollection = $entrypointCollection;
 		$this->parser = $parser;
+		$this->dispatcher = $dispatcher;
 		$this->authChecker = $authChecker;
 		$this->loader = $loader;
 		$this->locator = $locator;
@@ -97,6 +103,15 @@ class SmartyEngine implements EngineInterface {
 		$this->locator->get('extension.csrf')->register($this->smarty);
 		$this->locator->get('extension.modifier')->register($this->smarty);
 		$this->locator->get('extension.widget')->register($this->smarty);
+
+		$event = new SmartyInitializeEvent($this);
+		$this->dispatcher->dispatch($event, SmartyInitializeEvent::NAME);
+	}
+
+	public function getSmarty(): Smarty {
+		$this->initializeSmarty();
+
+		return $this->smarty;
 	}
 
 	public function render($name, array $parameters = []) {
