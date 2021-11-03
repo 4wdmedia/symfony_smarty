@@ -64,7 +64,7 @@ class CssInlineStyles {
 		// Add fallback-font for Outlook to all paragraphs
 		$paragraphs = self::queryElements($XPath, '//p');
 		foreach ($paragraphs as $paragraph) {
-			$class = $paragraph->getAttribute('class') ?? '';
+			$class = $paragraph->getAttribute('class');
 			$class .= ' fallback-font';
 			$paragraph->setAttribute('class', trim($class));
 		}
