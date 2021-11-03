@@ -25,6 +25,12 @@ class TwigInSmartyExtension implements SmartyExtension {
 		}
 
 		$template = $this->twig->createTemplate($content);
-		return $this->twig->render($template, $smarty->getTemplateVars());
+
+		$vars = $smarty->getTemplateVars();
+		if (!is_array($vars)) {
+			$vars = [];
+		}
+
+		return $this->twig->render($template, $vars);
 	}
 }
