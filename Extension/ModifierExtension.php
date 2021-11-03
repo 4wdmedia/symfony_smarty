@@ -18,6 +18,10 @@ class ModifierExtension implements SmartyExtension {
 	 * @param mixed $value
 	 */
 	public function smarty_integer($value): string {
+		if (!is_int($value)) {
+			return '';
+		}
+
 		return number_format((int)$value, 0, ',', '.');
 	}
 }
