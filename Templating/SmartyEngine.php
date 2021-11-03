@@ -6,6 +6,7 @@ namespace Vierwd\Symfony\Smarty\Templating;
 use Psr\Container\ContainerInterface;
 use Smarty;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Templating\Loader\LoaderInterface;
@@ -29,6 +30,8 @@ class SmartyEngine implements EngineInterface {
 	protected $authChecker;
 	/** @var LoaderInterface */
 	protected $loader;
+	/** @var KernelInterface */
+	protected $kernel;
 	/** @var ContainerInterface */
 	protected $locator;
 	/** @var array */
@@ -42,6 +45,7 @@ class SmartyEngine implements EngineInterface {
 		EventDispatcherInterface $dispatcher,
 		AuthorizationCheckerInterface $authChecker,
 		LoaderInterface $loader,
+		KernelInterface $kernel,
 		ContainerInterface $locator,
 		array $templateDirectories,
 		array $pluginDirectories = []
@@ -51,6 +55,7 @@ class SmartyEngine implements EngineInterface {
 		$this->dispatcher = $dispatcher;
 		$this->authChecker = $authChecker;
 		$this->loader = $loader;
+		$this->kernel = $kernel;
 		$this->locator = $locator;
 
 		$this->templateDirectories = $templateDirectories;
@@ -67,7 +72,7 @@ class SmartyEngine implements EngineInterface {
 
 		$this->smarty = new Smarty();
 
-		if ($this->locator->get('kernel')->getEnvironment() !== 'dev') {
+		if ($this->kernel->getEnvironment() !== 'dev') {
 			$this->smarty->setCacheLifetime(120);
 			$this->smarty->setCompileCheck(0);
 		}
@@ -76,7 +81,7 @@ class SmartyEngine implements EngineInterface {
 		// $this->Smarty->registerFilter('pre', $templateProcessor);
 		// $this->Smarty->registerFilter('variable', 'Vierwd\\VierwdSmarty\\View\\clean');
 
-		$cacheDir = $this->locator->get('kernel')->getCacheDir() . '/smarty';
+		$cacheDir = $this->kernel->getCacheDir() . '/smarty';
 		$this->smarty->setCompileDir($cacheDir . '/templates_c/');
 		$this->smarty->setCacheDir($cacheDir . '/cache/');
 
