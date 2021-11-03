@@ -6,7 +6,7 @@ namespace Vierwd\Symfony\Smarty\Extension;
 use Smarty;
 use Smarty_Internal_Template;
 
-class WidgetExtension {
+class WidgetExtension implements SmartyExtension {
 
 	public function __construct() {
 	}

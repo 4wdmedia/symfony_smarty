@@ -7,7 +7,7 @@ use Smarty;
 use Smarty_Internal_Template;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-class CsrfExtension {
+class CsrfExtension implements SmartyExtension {
 
 	/** @var CsrfTokenManagerInterface */
 	protected $csrfTokenManager;

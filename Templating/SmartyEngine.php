@@ -12,6 +12,7 @@ use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollectionInterface;
 use Vierwd\Symfony\Smarty\Event\SmartyInitializeEvent;
+use Vierwd\Symfony\Smarty\Extension\SmartyExtension;
 
 class SmartyEngine implements EngineInterface {
 
@@ -98,14 +99,24 @@ class SmartyEngine implements EngineInterface {
 		$this->smarty->assign('imageService', $this->locator->get('imageService'));
 		$this->smarty->assign('authChecker', $this->authChecker);
 
-		$this->locator->get('extension.routing')->register($this->smarty);
-		$this->locator->get('extension.twig')->register($this->smarty);
-		$this->locator->get('extension.csrf')->register($this->smarty);
-		$this->locator->get('extension.modifier')->register($this->smarty);
-		$this->locator->get('extension.widget')->register($this->smarty);
+		$this->registerExtension('extension.routing');
+		$this->registerExtension('extension.twig');
+		$this->registerExtension('extension.csrf');
+		$this->registerExtension('extension.modifier');
+		$this->registerExtension('extension.widget');
 
 		$event = new SmartyInitializeEvent($this);
 		$this->dispatcher->dispatch($event, SmartyInitializeEvent::NAME);
+	}
+
+	protected function registerExtension(string $name): void {
+		$extension = $this->locator->get($name);
+
+		if (! $extension instanceof SmartyExtension) {
+			throw new \Exception('Extension ' . $name . ' must implement SmartyExtension interface', 1635929196);
+		}
+
+		$extension->register($this->smarty);
 	}
 
 	public function getSmarty(): Smarty {

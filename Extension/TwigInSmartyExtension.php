@@ -6,7 +6,7 @@ use Smarty;
 use Smarty_Internal_Template;
 use Twig\Environment as TwigEnvironment;
 
-class TwigInSmartyExtension {
+class TwigInSmartyExtension implements SmartyExtension {
 
 	/** @var \Twig\Environment */
 	protected $twig = null;

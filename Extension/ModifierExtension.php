@@ -5,7 +5,7 @@ namespace Vierwd\Symfony\Smarty\Extension;
 
 use Smarty;
 
-class ModifierExtension {
+class ModifierExtension implements SmartyExtension {
 
 	public function __construct() {
 	}

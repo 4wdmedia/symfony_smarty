@@ -7,7 +7,7 @@ use Smarty;
 use Smarty_Internal_Template;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class RoutingExtension {
+class RoutingExtension implements SmartyExtension {
 
 	/** @var UrlGeneratorInterface */
 	private $generator;
