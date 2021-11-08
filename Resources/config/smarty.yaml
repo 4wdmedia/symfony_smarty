@@ -85,3 +85,11 @@ services:
 
     Symfony\Component\Templating\DelegatingEngine:
         alias: templating
+
+    Vierwd\Symfony\Smarty\DataCollector\SmartyCollector:
+        tags:
+            -
+                name: data_collector
+                id: vierwd.smarty
+                template: '@Smarty/Collector/smarty.html.twig'
+
