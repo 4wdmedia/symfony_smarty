@@ -44,11 +44,19 @@ class RoutingExtension implements SmartyExtension {
 			'parameters' => [],
 			'schemeRelative' => false,
 		];
+
 		$name = $params['name'];
+		if (is_null($name)) {
+			return '';
+		}
+
 		$parameters = $params['parameters'];
-		$parameters = array_map(function($parameter) {
-			return is_object($parameter) && method_exists($parameter, 'getId') ? $parameter->getId() : $parameter;
-		}, $parameters);
+		if (is_array($parameters)) {
+			$parameters = array_map(function($parameter) {
+				return is_object($parameter) && method_exists($parameter, 'getId') ? $parameter->getId() : $parameter;
+			}, $parameters);
+		}
+
 		$schemeRelative = $params['schemeRelative'];
 		return $this->generator->generate($name, $parameters, $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL);
 	}
