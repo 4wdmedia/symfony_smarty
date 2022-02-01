@@ -10,12 +10,9 @@ use Twig\Environment as TwigEnvironment;
 
 class TwigEngine implements EngineInterface {
 
-	/** @var TemplateNameParserInterface */
-	protected $parser;
-	/** @var LoaderInterface */
-	protected $loader;
-	/** @var TwigEnvironment */
-	protected $twig;
+	protected TemplateNameParserInterface $parser;
+	protected LoaderInterface $loader;
+	protected TwigEnvironment $twig;
 
 	public function __construct(TemplateNameParserInterface $parser, LoaderInterface $loader, TwigEnvironment $twig) {
 		$this->parser = $parser;

@@ -8,8 +8,7 @@ use Twig\Environment as TwigEnvironment;
 
 class TwigInSmartyExtension implements SmartyExtension {
 
-	/** @var \Twig\Environment */
-	protected $twig = null;
+	protected TwigEnvironment $twig;
 
 	public function __construct(TwigEnvironment $twig) {
 		$this->twig = $twig;

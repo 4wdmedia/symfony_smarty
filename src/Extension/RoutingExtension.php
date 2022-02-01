@@ -9,8 +9,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RoutingExtension implements SmartyExtension {
 
-	/** @var UrlGeneratorInterface */
-	private $generator;
+	private UrlGeneratorInterface $generator;
 
 	public function __construct(UrlGeneratorInterface $generator) {
 		$this->generator = $generator;

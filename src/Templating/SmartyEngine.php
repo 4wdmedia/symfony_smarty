@@ -17,27 +17,17 @@ use Vierwd\Symfony\Smarty\Extension\SmartyExtension;
 
 class SmartyEngine implements EngineInterface {
 
-	/** @var Smarty */
-	protected $smarty = null;
+	protected ?Smarty $smarty = null;
 
-	/** @var EntrypointLookupCollectionInterface */
-	protected $entrypointCollection;
-	/** @var TemplateNameParserInterface */
-	protected $parser;
-	/** @var EventDispatcherInterface */
-	protected $dispatcher;
-	/** @var AuthorizationCheckerInterface */
-	protected $authChecker;
-	/** @var LoaderInterface */
-	protected $loader;
-	/** @var KernelInterface */
-	protected $kernel;
-	/** @var ContainerInterface */
-	protected $locator;
-	/** @var array */
-	protected $templateDirectories;
-	/** @var array */
-	protected $pluginDirectories;
+	protected EntrypointLookupCollectionInterface $entrypointCollection;
+	protected TemplateNameParserInterface $parser;
+	protected EventDispatcherInterface $dispatcher;
+	protected AuthorizationCheckerInterface $authChecker;
+	protected LoaderInterface $loader;
+	protected KernelInterface $kernel;
+	protected ContainerInterface $locator;
+	protected array $templateDirectories;
+	protected array $pluginDirectories;
 
 	public function __construct(
 		EntrypointLookupCollectionInterface $entrypointCollection,
@@ -121,17 +111,20 @@ class SmartyEngine implements EngineInterface {
 			throw new \Exception('Extension ' . $name . ' must implement SmartyExtension interface', 1635929196);
 		}
 
+		assert($this->smarty instanceof Smarty);
 		$extension->register($this->smarty);
 	}
 
 	public function getSmarty(): Smarty {
 		$this->initializeSmarty();
+		assert($this->smarty instanceof Smarty);
 
 		return $this->smarty;
 	}
 
 	public function render($name, array $parameters = []) {
 		$this->initializeSmarty();
+		assert($this->smarty instanceof Smarty);
 
 		$this->entrypointCollection->getEntrypointLookup('_default')->reset();
 
@@ -143,6 +136,7 @@ class SmartyEngine implements EngineInterface {
 
 	public function exists($name) {
 		$this->initializeSmarty();
+		assert($this->smarty instanceof Smarty);
 
 		return $this->smarty->templateExists((string)$name);
 	}

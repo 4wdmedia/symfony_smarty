@@ -7,11 +7,10 @@ use Symfony\Component\Process\Process;
 
 class ImageService {
 
-	/** @var string */
-	private $command;
+	private ?string $command;
 
 	/** @var array<string> */
-	protected $allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'tif', 'tiff', 'bmp', 'pcx', 'tga', 'ico'];
+	protected array $allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'tif', 'tiff', 'bmp', 'pcx', 'tga', 'ico'];
 
 	public function __construct(string $command = null) {
 		if (!$command || !is_executable($command)) {

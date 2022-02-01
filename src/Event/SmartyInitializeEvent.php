@@ -10,8 +10,7 @@ class SmartyInitializeEvent extends Event {
 
 	public const NAME = 'vierwd.smartytemplating.initialize';
 
-	/** @var SmartyEngine */
-	protected $smartyEngine;
+	protected SmartyEngine $smartyEngine;
 
 	public function __construct(SmartyEngine $smartyEngine) {
 		$this->smartyEngine = $smartyEngine;

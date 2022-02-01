@@ -9,8 +9,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class CsrfExtension implements SmartyExtension {
 
-	/** @var CsrfTokenManagerInterface */
-	protected $csrfTokenManager;
+	protected CsrfTokenManagerInterface $csrfTokenManager;
 
 	public function __construct(CsrfTokenManagerInterface $csrfTokenManager) {
 		$this->csrfTokenManager = $csrfTokenManager;
