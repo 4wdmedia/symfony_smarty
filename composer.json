@@ -15,9 +15,19 @@
     "require": {
         "php": "^7.2.0",
         "smarty/smarty": "^3.1",
+        "symfony/framework-bundle": "5.4.*",
+        "symfony/process": "5.4.*",
+        "symfony/security-bundle": "5.4.*",
         "symfony/templating": "^5.0.0",
+        "symfony/webpack-encore-bundle": "^1.11",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
+        "twig/twig": "^2.12|^3.0",
         "vierwd/svg-inliner": "^1.2"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-symfony": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -29,6 +39,9 @@
             "*": "dist"
         },
         "sort-packages": true,
-        "vendor-dir": "vendor"
+        "vendor-dir": "vendor",
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }
