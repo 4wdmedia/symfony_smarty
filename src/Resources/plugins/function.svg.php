@@ -9,7 +9,7 @@ function smarty_function_svg(array $params, Smarty_Internal_Template $smarty): s
 	if (!$svgInliner) {
 		$svgInliner = new SvgInliner(['excludeFromConcatenation' => true]);
 	}
-	$params = $params + [
+	$params += [
 		'output' => false,
 		'width' => false,
 		'height' => false,

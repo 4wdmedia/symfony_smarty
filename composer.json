@@ -25,9 +25,11 @@
         "vierwd/svg-inliner": "^1.2"
     },
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.4",
-        "phpstan/phpstan-symfony": "^1.1"
+        "phpstan/phpstan-symfony": "^1.1",
+        "vierwd/coding-standard": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -41,7 +43,13 @@
         "sort-packages": true,
         "vendor-dir": "vendor",
         "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
         }
+    },
+    "scripts": {
+        "phplint": "find . -name \\*.php ! -path \"./vendor/*\" | xargs -I{} php -d display_errors=stderr -l {} > /dev/null \\;",
+        "phpstan": "phpstan analyze",
+        "phpcs": "phpcs --runtime-set ignore_warnings_on_exit 1 --standard=vendor/vierwd/coding-standard/ForwardMediaModern src/"
     }
 }

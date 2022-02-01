@@ -7,9 +7,6 @@ use Smarty;
 
 class ModifierExtension implements SmartyExtension {
 
-	public function __construct() {
-	}
-
 	public function register(Smarty $smarty): void {
 		$smarty->registerPlugin('modifier', 'integer', [$this, 'smarty_integer']);
 	}

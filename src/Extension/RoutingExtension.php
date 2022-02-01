@@ -23,7 +23,7 @@ class RoutingExtension implements SmartyExtension {
 
 	public function getPath(array $params, Smarty_Internal_Template $smarty): string {
 		// string $name, array $parameters = [], bool $relative = false
-		$params = $params + [
+		$params += [
 			'name' => null,
 			'parameters' => [],
 			'relative' => false,
@@ -39,7 +39,7 @@ class RoutingExtension implements SmartyExtension {
 
 	public function getUrl(array $params, Smarty_Internal_Template $smarty): string {
 		// string $name, array $parameters = [], bool $schemeRelative = false
-		$params = $params + [
+		$params += [
 			'name' => null,
 			'parameters' => [],
 			'schemeRelative' => false,

@@ -21,7 +21,7 @@ class CsrfExtension implements SmartyExtension {
 	}
 
 	public function getCsrfToken(array $params, Smarty_Internal_Template $smarty): string {
-		$params = $params + [
+		$params += [
 			'tokenId' => null,
 		];
 		$tokenId = $params['tokenId'];

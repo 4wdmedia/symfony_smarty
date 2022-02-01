@@ -8,9 +8,6 @@ use Smarty_Internal_Template;
 
 class WidgetExtension implements SmartyExtension {
 
-	public function __construct() {
-	}
-
 	public function register(Smarty $smarty): void {
 		$smarty->registerPlugin('function', 'widget', [$this, 'getWidget']);
 	}
