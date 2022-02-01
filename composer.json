@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Vierwd\\Symfony\\Smarty\\": ""
+            "Vierwd\\Symfony\\Smarty\\": "src/"
         }
     },
     "config": {

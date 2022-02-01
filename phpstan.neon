@@ -1,11 +1,8 @@
 parameters:
     level: 8
 
-    excludePaths:
-        - vendor
-
     paths:
-        - .
+        - src/
 
     checkMissingIterableValueType: false
 
