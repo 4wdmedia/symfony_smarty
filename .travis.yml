@@ -20,7 +20,7 @@ before_install:
   - composer --version
 
 install:
-  - if [[ "$SNIFF" == "1" ]]; then composer update; fi
+  - composer install
 
 script:
   - >
